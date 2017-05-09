@@ -1,11 +1,14 @@
 
+
 #include <cstdio>
 #include <cinttypes>
 
 #include "shader.hpp"
 #include "renderer.hpp"
 
-
+//Config variables
+const bool draw_anchors = false;
+const int border = 1;
 const int grid_res = 16;
 
 struct v2 {
@@ -31,7 +34,7 @@ tetromino tetromino_types[] = {
 
 
 void fill_grid_square(Renderer& r, int x, int y, color c){
-    r.drawSquare(x * grid_res, y * grid_res, grid_res, grid_res, c);
+    r.drawSquare(x * grid_res + border, y * grid_res + border, grid_res - 2 * border, grid_res - 2 * border, c);
 }
 
 void draw_tetromino(Renderer& r, tetromino t, int rotation, int x, int y){
@@ -41,6 +44,8 @@ void draw_tetromino(Renderer& r, tetromino t, int rotation, int x, int y){
         case 2: for(auto i : t.loc) fill_grid_square(r, x - i.x, y - i.y, t.c); break;
         case 3: for(auto i : t.loc) fill_grid_square(r, x - i.y, y + i.x, t.c); break;
     }
+
+    if (draw_anchors) fill_grid_square(r, x, y, white);
 }
 
 
@@ -57,12 +62,7 @@ int main() {
             draw_tetromino(renderer, t, 1, x_loc, 10);
             draw_tetromino(renderer, t, 2, x_loc, 15);
             draw_tetromino(renderer, t, 3, x_loc, 20);
-
-            fill_grid_square(renderer, x_loc, 5, white);
-            fill_grid_square(renderer, x_loc, 10, white);
-            fill_grid_square(renderer, x_loc, 15, white);
-            fill_grid_square(renderer, x_loc, 20, white);
-
+            
             x_loc += 5;
         }
 
